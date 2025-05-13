@@ -1,85 +1,9 @@
 import streamlit as st
-
-# Language selector
-language = st.sidebar.selectbox("Choose Language / Tilni tanlang / Выберите язык", ["English", "Uzbek", "Russian"])
-# Dictionary for multilingual content
-content = {
-    "English": {
-        "title": "Samarkand International University of Technology (SIUT)",
-        "admissions": "Admissions are open for the upcoming academic year. Apply online through our website. Requirements include academic transcripts, a valid ID/passport, and proof of English proficiency.",
-        "tuition": "Tuition fees vary depending on the program. On average, annual tuition ranges from $2,500 to $4,000. Scholarships may be available.",
-        "dormitories": "SIUT provides modern dormitory facilities for both local and international students, with options for shared or private rooms.",
-        "scholarships": "SIUT offers merit-based and need-based scholarships. Early applicants may also be eligible for special financial aid.",
-        "programs": "Our programs include Computer Science, Artificial Intelligence, Engineering, and Business Technology. All programs are aligned with international standards.",
-        "application": "Applications are submitted online. Visit our official website, complete the form, and upload required documents. Application deadlines vary by semester.",
-        "contact": "Email: info@siut.uz | Phone: +998 71 200 00 00 | Address: University Campus, Samarkand, Uzbekistan",
-        "language": "All programs are taught in English. Some support is available in Uzbek and Russian.",
-        "student_life": "SIUT hosts various student clubs, cultural events, and hackathons. Our campus is vibrant, inclusive, and tech-driven."
-    },
-    "Uzbek": {
-        "title": "Samarqand Xalqaro Texnologiya Universiteti (SIUT)",
-        "admissions": "Yangi o'quv yili uchun qabul ochiq. Arizalarni rasmiy veb-sayt orqali topshiring. Talablar: diplom nusxalari, ID yoki pasport va ingliz tilini bilish darajasi.",
-        "tuition": "O'qish narxi tanlangan dasturga qarab farq qiladi. Yillik o'rtacha to'lov $2,500 dan $4,000 gacha. Ba'zi holatlarda grantlar mavjud.",
-        "dormitories": "SIUT talabalar uchun zamonaviy yotoqxona sharoitlarini taqdim etadi. Yotoqxonalar umumiy yoki yakka xonalardan iborat.",
-        "scholarships": "Universitet iqtidorli va ehtiyojmand talabalar uchun grantlar taqdim etadi. Erta ro'yxatdan o'tganlar alohida imtiyozga ega bo'lishi mumkin.",
-        "programs": "Bizda Kompyuter fanlari, Sun’iy intellekt, Muhandislik va Biznes texnologiyalari bo‘yicha dasturlar mavjud.",
-        "application": "Arizalarni onlayn tarzda yuboring. Rasmiy saytga kirib, shaklni to‘ldiring va zarur hujjatlarni yuklang.",
-        "contact": "Email: info@siut.uz | Tel: +998 71 200 00 00 | Manzil: Universitet shaharchasi, Samarqand, O‘zbekiston",
-        "language": "Barcha darslar ingliz tilida o‘qitiladi. Qo‘shimcha tarzda o‘zbek va rus tillarida yordam beriladi.",
-        "student_life": "SIUTda turli klublar, madaniy tadbirlar va xakatonlar tashkil etiladi. Universitet hayoti faol va texnologiyaga boy."
-    },
-    "Russian": {
-        "title": "Самаркандский Международный Технологический Университет (SIUT)",
-        "admissions": "Прием открыт на следующий учебный год. Подайте заявку через наш официальный сайт. Требования: аттестат, паспорт и знание английского языка.",
-        "tuition": "Стоимость обучения зависит от программы и составляет в среднем от $2,500 до $4,000 в год. Возможны стипендии.",
-        "dormitories": "SIUT предоставляет современные общежития для местных и иностранных студентов. Доступны как общие, так и отдельные комнаты.",
-        "scholarships": "Университет предлагает стипендии на основе успеваемости и финансовых потребностей. Ранние заявки могут получить дополнительные льготы.",
-        "programs": "Программы включают компьютерные науки, искусственный интеллект, инженерное дело и бизнес-технологии.",
-        "application": "Подача заявок осуществляется онлайн. Посетите наш сайт, заполните форму и загрузите необходимые документы.",
-        "contact": "Email: info@siut.uz | Телефон: +998 71 200 00 00 | Адрес: Университетский городок, Самарканд, Узбекистан",
-        "language": "Все программы преподаются на английском языке. Также доступна поддержка на узбекском и русском.",
-        "student_life": "Университет предлагает студенческие клубы, культурные мероприятия и хакатоны. Кампус активный и ориентирован на технологии."
-    }
-}
-
-# Load selected language content
-st.title(content[language]["title"])
-
-st.header("🎓 Admissions")
-st.write(content[language]["admissions"])
-
-st.header("💸 Tuition")
-st.write(content[language]["tuition"])
-
-st.header("🏠 Dormitories")
-st.write(content[language]["dormitories"])
-
-st.header("🎓 Scholarships")
-st.write(content[language]["scholarships"])
-
-st.header("📚 Programs")
-st.write(content[language]["programs"])
-
-st.header("📝 Application Method")
-st.write(content[language]["application"])
-
-st.header("🌍 Language of Instruction")
-st.write(content[language]["language"])
-
-st.header("🏫 Student Life")
-st.write(content[language]["student_life"])
-
-st.header("📩 Contact Info")
-st.write(content[language]["contact"])
-
-
-import streamlit as st
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from langdetect import detect
 import numpy as np
 
-# FAQ Data
+# FAQ data
 faq_data = {
     "en": {
         "what is siut": "SIUT stands for Samarkand International University of Technology, a modern higher education institution in Uzbekistan.",
@@ -119,37 +43,48 @@ faq_data = {
     }
 }
 
-# Chatbot response function
-def get_chatbot_response(user_input):
-    try:
-        lang = detect(user_input)
-    except:
-        return "Sorry, I couldn't detect the language. Please try again."
+# Response logic
+def get_multilingual_response(user_input, data):
+    user_input = user_input.lower()
+    best_match = ""
+    best_lang = ""
+    highest_score = 0.0
 
-    if lang not in faq_data:
-        return "Sorry, I can only respond in English, Russian, or Uzbek."
+    for lang, qa_pairs in data.items():
+        questions = list(qa_pairs.keys())
+        vectorizer = TfidfVectorizer().fit(questions + [user_input])
+        tfidf = vectorizer.transform(questions + [user_input])
+        similarity = cosine_similarity(tfidf[-1], tfidf[:-1])
+        max_score = np.max(similarity)
+        if max_score > highest_score:
+            highest_score = max_score
+            best_lang = lang
+            best_match = questions[np.argmax(similarity)]
 
-    questions = list(faq_data[lang].keys())
-    vectorizer = TfidfVectorizer()
-    tfidf = vectorizer.fit_transform(questions)
-    user_vec = vectorizer.transform([user_input.lower()])
-    similarity = cosine_similarity(user_vec, tfidf)
-    best_match_idx = np.argmax(similarity)
-    confidence = similarity[0][best_match_idx]
-
-    if confidence < 0.3:
-        return "I'm not sure how to answer that. Please ask a different question."
-
-    best_question = questions[best_match_idx]
-    return faq_data[lang][best_question]
+    if highest_score < 0.3:
+        return "Sorry, I didn't understand that. Could you rephrase?"
+    return data[best_lang][best_match]
 
 # Streamlit UI
-st.set_page_config(page_title="SIUT Chatbot")
-st.title("🤖 SIUT Multilingual Chatbot")
-st.write("Ask me about admissions, programs, dorms, tuition, etc. (English, Uzbek, Russian supported)")
+st.set_page_config(page_title="SIUT Website", layout="wide")
+st.title("🎓 Samarkand International University of Technology")
 
-user_query = st.text_input("Your question")
+st.sidebar.header("Navigation")
+section = st.sidebar.radio("Go to:", ["Home", "Admissions", "Programs", "Chatbot"])
 
-if user_query:
-    response = get_chatbot_response(user_query)
-    st.markdown(f"**Bot:** {response}")
+if section == "Home":
+    st.header("Welcome to SIUT")
+    st.write("SIUT is a modern technological university located in Samarkand, Uzbekistan. Explore our programs and offerings.")
+elif section == "Admissions":
+    st.header("Admissions")
+    st.write("Find out how to apply, requirements, tuition, and scholarships.")
+elif section == "Programs":
+    st.header("Academic Programs")
+    st.write("We offer cutting-edge programs in Technology, Engineering, Computer Science, and Business.")
+elif section == "Chatbot":
+    st.header("🤖 SIUT FAQ Chatbot")
+    st.write("Ask your question below in English, Uzbek, or Russian:")
+    user_input = st.text_input("Your question:")
+    if user_input:
+        response = get_multilingual_response(user_input, faq_data)
+        st.success(response)
